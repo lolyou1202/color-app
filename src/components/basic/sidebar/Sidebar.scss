@@ -1,0 +1,15 @@
+.collection__sidebar {
+	display: flex;
+	flex-direction: column;
+	gap: 60px;
+	padding-top: 60px;
+	&-link {
+		transition: all 0.2s ease-in-out;
+		animation: appearance 0.4s ease-in-out;
+	}
+	p {
+		font-size: 40px;
+		line-height: var(--lineHeight-main);
+		color: var(--text-dark);
+	}
+}

@@ -1,0 +1,65 @@
+*,
+*::before,
+*::after {
+	box-sizing: border-box;
+	padding: 0;
+	margin: 0;
+	font-family: 'Degular', sans-serif;
+	font-weight: 700;
+}
+
+:root {
+	--primary-dark: #353535;
+	--primary-light: #fff;
+
+	--backgrount-main: #dadada;
+	--text-dark: #353535;
+	--text-light: #fff;
+
+	--shadow-wide: 10px 10px 0px #353535;
+	--shadow-short: 4px 4px 0px #353535;
+
+	--borderRadius-wide: 12px;
+	--borderRadius-short: 6px;
+
+	--lineHeight-main: 100%;
+}
+
+.App {
+	display: flex;
+	flex-direction: column;
+	height: 100vh;
+	background: var(--backgrount-main);
+	padding: 60px;
+	width: 100%;
+	overflow: hidden;
+}
+
+a {
+	text-decoration: none;
+}
+
+svg {
+	flex-shrink: 0;
+}
+
+@keyframes appearance {
+	from {
+		opacity: 0;
+		transform: translateY(30px);
+	}
+	to {
+		opacity: 1;
+		transform: translateY(0);
+	}
+}
+@keyframes delete {
+	from {
+		opacity: 1;
+		transform: translateY(0);
+	}
+	to {
+		opacity: 0;
+		transform: translateY(-30px);
+	}
+}
