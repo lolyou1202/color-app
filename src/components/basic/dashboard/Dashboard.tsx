@@ -1,10 +1,15 @@
-import { FC, useCallback } from 'react'
+import { FC, useCallback, useEffect } from 'react'
 import './Dashboard.scss'
 import { useAppDispatch, useAppSelector } from '../../../redux/hooks'
 import { SingleColorInPalette } from '../singleColorInPalette/SingleColorInPalette'
-import { asd } from '../../../redux/slices/paletteSlice'
+import { addColorsBetweenColors, fillPalette } from '../../../redux/slices/paletteSlice'
+import { useParams } from 'react-router-dom'
 
 export const Dashboard: FC = () => {
+	const { paletteId } = useParams()
+	const urlPaletteArray = paletteId?.split('-')
+	console.log(urlPaletteArray)
+
 	const { palette } = useAppSelector(store => store.pickerPalette)
 
 	const dispatch = useAppDispatch()
@@ -27,7 +32,7 @@ export const Dashboard: FC = () => {
 
 	const onClickNumberOfAdding = (index: number, number: number) => {
 		dispatch(
-			asd({
+			addColorsBetweenColors({
 				index,
 				number,
 				firstColor: palette[index].HEX,
@@ -35,6 +40,14 @@ export const Dashboard: FC = () => {
 			})
 		)
 	}
+
+	useEffect(() => {
+		//dispatch(fillPalette(urlPaletteArray || []))
+	}, [dispatch, urlPaletteArray])
+
+	//useEffect(() => {
+		
+	//}, [])
 
 	return (
 		<div className='dashboard primaryButton'>

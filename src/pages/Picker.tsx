@@ -113,18 +113,13 @@ export const Picker: FC = () => {
 		dispatch(updateLocation(EnumLocation.picker))
 	}, [dispatch])
 
-	//useEffect(() => {
-	//	dispatch(setColor(colorId || ''))
-	//}, [colorId, dispatch])
-
-	//useEffect(() => {
-	//	HEXToRGB(pickerColor.color)
-	//}, [HEXToRGB, pickerColor.color])
-
 	useEffect(() => {
 		dispatch(setColor(colorId || ''))
-		HEXToRGB(colorId || '')
-	}, [HEXToRGB, colorId, dispatch, pickerColor.color])
+	}, [colorId, dispatch])
+
+	useEffect(() => {
+		HEXToRGB(pickerColor.color)
+	}, [HEXToRGB, pickerColor.color])
 
 	return (
 		<div className='picker'>
