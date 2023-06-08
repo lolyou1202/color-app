@@ -4,6 +4,7 @@ import { Collection } from './pages/Collection'
 import { CollectionColors } from './pages/CollectionColors'
 import { CollectionPalettes } from './pages/CollectionPalettes'
 import { Picker } from './pages/Picker'
+import { Palette } from './pages/Palette'
 
 function App() {
 	return (
@@ -14,17 +15,11 @@ function App() {
 					<Route path='/' element={<Navigate to='/picker' />} />
 					<Route path='/picker'>
 						<Route index element={<Picker />} />
-						<Route
-							path=':colorId'
-							element={<Picker />}
-						/>
+						<Route path=':colorId' element={<Picker />} />
 					</Route>
 					<Route path='/palette'>
-						<Route index element={<div>Palette</div>} />
-						<Route
-							path=':paletteId'
-							element={<div>Custom palette</div>}
-						/>
+						<Route index element={<Palette />} />
+						<Route path=':paletteId' element={<Palette />} />
 					</Route>
 					<Route path='/collection'>
 						<Route index element={<Collection />} />

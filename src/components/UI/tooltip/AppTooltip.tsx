@@ -4,13 +4,15 @@ import { Tooltip } from '@chakra-ui/react'
 
 interface IAppTooltip {
 	children: ReactNode
+	label: string
+	marginBottom?: number
 }
 
-export const AppTooltip: FC<IAppTooltip> = ({ children }) => {
+export const AppTooltip: FC<IAppTooltip> = ({ children, label, marginBottom = 24 }) => {
 	return (
 		<Tooltip
 			className='tooltip'
-			label='Copy'
+			label={label}
 			placement='top'
 			openDelay={500}
 			position='relative'
@@ -24,7 +26,7 @@ export const AppTooltip: FC<IAppTooltip> = ({ children }) => {
 			lineHeight='100%'
 			color='#fff'
 			padding='6px 30px 10px'
-			marginBottom='24px'
+			marginBottom={`${marginBottom}px`}
 		>
 			{children}
 		</Tooltip>

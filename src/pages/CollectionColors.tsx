@@ -5,10 +5,7 @@ import { useAppDispatch, useAppSelector } from '../redux/hooks'
 import { CollectionSingleItem } from '../components/UI/collectionSingleItem/CollectionSingleItem'
 import { removeColor } from '../redux/slices/colorsStoreSlice'
 import { CollectionSingleItemColor } from '../components/UI/collectionSingleItem/CollectionSingleItemColor'
-import {
-	EnumLocation,
-	updateLocation,
-} from '../redux/slices/locationSlice'
+import { EnumLocation, updateLocation } from '../redux/slices/locationSlice'
 
 export const CollectionColors: FC = () => {
 	const colors = useAppSelector(

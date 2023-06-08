@@ -6,8 +6,14 @@ import { Hash } from '../components/UI/icons/Hash'
 import { Drop } from '../components/UI/icons/Drop'
 import { HEXtoRGB } from '../hooks/functions/useHEXtoRGB'
 import { useLocation, useNavigate, useParams } from 'react-router-dom'
-import { fetchRandom, setColor } from '../redux/slices/pickerColorSlice'
+import { fetchRandom, setColor } from '../redux/slices/colorSlice'
 import { PickerButtons } from '../components/basic/pickerButtons/PickerButtons'
+import { stringRGBtoObjectRGB } from '../hooks/functions/useStringRGBtoObjectRGB'
+import { RGBtoHEX } from '../hooks/functions/useRGBtoHEX'
+import { addColor } from '../redux/slices/colorsStoreSlice'
+import { useToast } from '@chakra-ui/react'
+import { Toast } from '../components/UI/toast/Toast'
+import { isValidateHEX } from '../hooks/functions/isValidateHEX'
 
 export const Picker: FC = () => {
 	const pickerColor = useAppSelector(store => store.pickerColor)
@@ -20,31 +26,85 @@ export const Picker: FC = () => {
 	const location = useLocation()
 	const navigate = useNavigate()
 	const dispatch = useAppDispatch()
+	const toast = useToast()
 
-	const HEXToRGB = useCallback((value: string) => {
+	const HEXToRGB = useCallback(
+		(value: string) => {
+			const validValue = value.replace(/[^\d\w]/g, '')
+			SetHEXInputState(validValue)
 
+			if (!validValue && validValue !== pickerColor.color) {
+				dispatch(setColor(''))
+				navigate('/picker')
+				return
+			}
 
-		if (!HEXInputState) {
-			dispatch(setColor(''))
-			navigate('/picker')
-			return
-		}
+			const RGB = HEXtoRGB(validValue)
 
-		const RGB = HEXtoRGB(HEXInputState)
+			if (!RGB) return SetRGBInputState('')
 
-		if (!RGB) return SetRGBInputState('')
-		if (location.pathname !== `/picker/${HEXInputState}`) {
-			navigate(`/picker/${HEXInputState}`)
-		}
+			const { r, g, b } = RGB
 
-		dispatch(setColor(HEXInputState))
-		SetRGBInputState(`${RGB.r}, ${RGB.g}, ${RGB.b}`)
-	}, [HEXInputState, dispatch, location.pathname, navigate])
+			if (
+				location.pathname !== `/picker/${validValue}` &&
+				validValue !== pickerColor.color
+			) {
+				navigate(`/picker/${validValue}`)
+			}
+			if (validValue !== pickerColor.color) {
+				dispatch(setColor(validValue))
+			}
 
-	const RGBToHEX = useCallback(() => {}, [])
+			SetRGBInputState(`${r}, ${g}, ${b}`)
+		},
+		[dispatch, location.pathname, navigate, pickerColor.color]
+	)
 
-	const onClickClear = () => {}
-	const onClickSave = () => {}
+	const RGBToHEX = useCallback(
+		(value: string) => {
+			const validValue = value.replace(/[^\d, ]/g, '')
+
+			SetRGBInputState(validValue)
+
+			if (!validValue) {
+				dispatch(setColor(''))
+				navigate('/picker')
+				return
+			}
+			const RGB = stringRGBtoObjectRGB(validValue)
+
+			if (!RGB) return SetHEXInputState('')
+
+			const { r, g, b } = RGB
+
+			const HEX = RGBtoHEX(r, g, b)
+
+			if (location.pathname !== `/picker/${HEX}`) {
+				navigate(`/picker/${HEX}`)
+			}
+
+			dispatch(setColor(HEX))
+
+			SetHEXInputState(HEX)
+		},
+		[dispatch, location.pathname, navigate]
+	)
+
+	const onClickClear = () => {
+		HEXToRGB('')
+		RGBToHEX('')
+	}
+	const onClickSave = () => {
+		dispatch(addColor(isValidateHEX(pickerColor.color)![0]))
+		toast({
+			render: () => (
+				<Toast
+					variant='regular'
+					text={`Сolor #${pickerColor.color} added to the collection`}
+				/>
+			),
+		})
+	}
 	const onClickRandom = () => {
 		dispatch(fetchRandom())
 	}
@@ -53,10 +113,18 @@ export const Picker: FC = () => {
 		dispatch(updateLocation(EnumLocation.picker))
 	}, [dispatch])
 
+	//useEffect(() => {
+	//	dispatch(setColor(colorId || ''))
+	//}, [colorId, dispatch])
+
+	//useEffect(() => {
+	//	HEXToRGB(pickerColor.color)
+	//}, [HEXToRGB, pickerColor.color])
+
 	useEffect(() => {
 		dispatch(setColor(colorId || ''))
 		HEXToRGB(colorId || '')
-	}, [HEXToRGB, colorId, dispatch])
+	}, [HEXToRGB, colorId, dispatch, pickerColor.color])
 
 	return (
 		<div className='picker'>
@@ -91,7 +159,7 @@ export const Picker: FC = () => {
 				/>
 			</PickerInputItem>
 			<PickerButtons
-				disabledButtons={true}
+				HEXInputState={HEXInputState}
 				onClickClear={onClickClear}
 				onClickSave={onClickSave}
 				onClickRandom={onClickRandom}

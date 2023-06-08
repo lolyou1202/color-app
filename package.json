@@ -15,6 +15,7 @@
     "@types/react": "^18.2.6",
     "@types/react-dom": "^18.2.4",
     "axios": "^1.4.0",
+    "chroma-js": "^2.4.2",
     "framer-motion": "^10.12.16",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
@@ -50,6 +51,7 @@
     ]
   },
   "devDependencies": {
+    "@types/chroma-js": "^2.4.0",
     "@types/node-sass": "^4.11.3"
   }
 }

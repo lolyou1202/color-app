@@ -1,38 +1,35 @@
 import { PayloadAction, createAsyncThunk, createSlice } from '@reduxjs/toolkit'
+import { RGBtoHEX } from '../../hooks/functions/useRGBtoHEX'
 import { getContrast } from '../../hooks/functions/getContrast'
 import axios from 'axios'
 import { randomColorData } from '../api/pickerRandomColor'
-import { redirect } from 'react-router-dom'
 
-interface IInitialState {
+interface IinitialState {
 	color: string
 	contrastColor: string
+	loading: boolean
 }
 
-const initialState: IInitialState = {
+const initialState: IinitialState = {
 	color: '',
 	contrastColor: '',
-}
-
-interface results {
-	palette: string[]
-	score: number
+	loading: false,
 }
 
 export interface fetchRandomResults {
-	results: results[]
+	result: number[][]
 }
 
 export const fetchRandom = createAsyncThunk<fetchRandomResults>(
-	'colorsStore/fetchRandom',
+	'openedColor/fetchRandom',
 	async (_, { rejectWithValue }) => {
 		try {
 			const response = await axios({
 				method: 'post',
-				url: 'https://api.huemint.com/color',
-				data: randomColorData,
+				url: 'http://colormind.io/api/',
+				data: JSON.stringify(randomColorData),
 			})
-			redirect('/picker/123')
+			console.log(response.data)
 			return response.data
 		} catch (err) {
 			return rejectWithValue(err)
@@ -40,8 +37,8 @@ export const fetchRandom = createAsyncThunk<fetchRandomResults>(
 	}
 )
 
-const pickerColorSlice = createSlice({
-	name: 'colorsStore',
+const colorSlice = createSlice({
+	name: 'openedColor',
 	initialState,
 	reducers: {
 		setColor(state, { payload }: PayloadAction<string>) {
@@ -52,18 +49,27 @@ const pickerColorSlice = createSlice({
 	extraReducers: builder => {
 		builder
 			.addCase(fetchRandom.pending, (state, { payload }) => {
-				//console.log(payload)
+				state.loading = true
 			})
 			.addCase(fetchRandom.fulfilled, (state, { payload }) => {
-				state.color = payload.results[0].palette[0]
-				console.log(payload.results[0].palette[0]);
+				state.loading = false
+				const HEX = RGBtoHEX(
+					payload.result[0][0],
+					payload.result[0][1],
+					payload.result[0][2]
+				)
+				state.color = HEX
+
+				state.contrastColor = getContrast(
+					HEX.replace(/[^a-zA-Z0-9]/g, '').toUpperCase()
+				)
 			})
 			.addCase(fetchRandom.rejected, (state, { payload }) => {
-				//console.log(payload)
+				state.loading = false
 			})
 	},
 })
 
-const { actions, reducer } = pickerColorSlice
+const { actions, reducer } = colorSlice
 export const { setColor } = actions
 export default reducer

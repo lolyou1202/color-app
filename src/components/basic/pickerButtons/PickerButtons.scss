@@ -12,18 +12,33 @@
 .picker__singleButton {
 	width: 200px;
 	height: 80px;
-	font-weight: 700;
-	font-size: 40px;
-	line-height: 100%;
-	color: var(--text-dark);
-	&.transparent {
-		opacity: 0.5;
-		transition: all 0.2s ease-in-out;
-		&:hover {
-			opacity: 1;
-		}
-	}
+	opacity: 1;
+	transition: all 0.2s ease-in-out;
 	&.disabled {
 		pointer-events: none;
+		opacity: 0.5;
+	}
+	p {
+		font-weight: 700;
+		font-size: 40px;
+		line-height: 100%;
+		color: var(--text-dark);
+		user-select: none;
+		&.animation {
+			opacity: 0;
+		}
+	}
+	&-saveCheck {
+		position: absolute;
+		left: 50%;
+		top: 50%;
+		transform: translate(-50%, -50%) scale(0);
+		opacity: 0;
+		transition: none;
+		&.animation {
+			opacity: 1;
+			transform: translate(-50%, -50%) scale(1);
+			transition: all 0.2s ease-in-out;
+		}
 	}
 }

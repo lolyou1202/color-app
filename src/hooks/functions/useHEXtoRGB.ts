@@ -1,17 +1,12 @@
 import { RGB } from '../../types/types'
+import { isValidateHEX } from './isValidateHEX'
 
-export const HEXtoRGB = (hex: string): RGB | undefined => {
-	if (!hex || hex === undefined || hex === '') {
+export const HEXtoRGB = (HEX: string): RGB | undefined => {
+	if (!HEX) {
 		return undefined
 	}
 
-	const shorthandRegex = /^#?([a-f\d])([a-f\d])([a-f\d])$/i
-	hex = hex.replace(shorthandRegex, (m, r, g, b) => {
-		return r + r + g + g + b + b
-	})
-
-	const result: RegExpExecArray | null =
-		/^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec(hex)
+	const result = isValidateHEX(HEX)
 
 	return result
 		? {

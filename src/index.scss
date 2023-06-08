@@ -63,3 +63,13 @@ svg {
 		transform: translateY(-30px);
 	}
 }
+@keyframes hideAddColor {
+	from {
+		opacity: 1;
+		display: block;
+	}
+	to {
+		opacity: 0;
+		display: none;
+	}
+}

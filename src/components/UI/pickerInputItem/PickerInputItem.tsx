@@ -72,7 +72,7 @@ export const PickerInputItem: FC<IPickerInputItem> = ({
 				type='text'
 				value={text}
 				onChange={event =>
-					onChange(event.target.value.toLocaleUpperCase())
+					onChange(event.target.value)
 				}
 				style={{ color: contrastColor }}
 				spellCheck='false'
@@ -86,7 +86,7 @@ export const PickerInputItem: FC<IPickerInputItem> = ({
 			>
 				{placeholder}
 			</span>
-			<AppTooltip>
+			<AppTooltip label='Copy'>
 				<button
 					className='picker__inputItem-copy'
 					onClick={e => {

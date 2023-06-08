@@ -3,6 +3,7 @@ import './PrimaryButton.scss'
 
 interface IPrimaryButton {
 	variant?: 'filled' | 'transparent'
+	size?: 'small' | 'regular' | 'large'
 	disabled?: boolean
 	className?: string
 	display?: string
@@ -17,14 +18,16 @@ interface IPrimaryButton {
 	height?: string
 	overflow?: 'visible' | 'hidden' | 'clip' | 'scroll' | 'auto'
 	onclick?: () => void
+	onMouseLeave?: () => void
 	children?: React.ReactNode
 }
 
 export const PrimaryButton: FC<IPrimaryButton> = ({
 	variant = 'filled',
+	size = 'regular',
 	disabled,
 	className,
-	display = 'block',
+	display,
 	gridTemplateColumns,
 	alignItems,
 	justifyContent,
@@ -36,6 +39,7 @@ export const PrimaryButton: FC<IPrimaryButton> = ({
 	height,
 	overflow = 'visible',
 	onclick,
+	onMouseLeave,
 	children,
 }) => {
 	return (
@@ -59,6 +63,7 @@ export const PrimaryButton: FC<IPrimaryButton> = ({
 				overflow: overflow,
 			}}
 			onClick={onclick}
+			onMouseLeave={onMouseLeave}
 		>
 			{children}
 		</button>

@@ -1,4 +1,5 @@
 import { PayloadAction, createSlice } from '@reduxjs/toolkit'
+import { getRandomInt } from '../../hooks/functions/getRandomInt'
 
 export interface ICollectionColors {
 	id: number
@@ -35,7 +36,12 @@ const colorsStoreSlice = createSlice({
 	name: 'colorsStore',
 	initialState,
 	reducers: {
-		addColor: (state, action) => {},
+		addColor: (state, { payload }: PayloadAction<string>) => {
+			state.collectionColors.unshift({
+				id: getRandomInt(100, 10000),
+				hex: [payload],
+			})
+		},
 		removeColor: (state, { payload }: PayloadAction<number>) => {
 			state.collectionColors = state.collectionColors.filter(
 				color => color.id !== payload

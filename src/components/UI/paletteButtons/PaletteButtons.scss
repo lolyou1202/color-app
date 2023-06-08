@@ -1,0 +1,59 @@
+.palette__buttons {
+	display: flex;
+	justify-content: space-between;
+	position: relative;
+	&-navigate {
+		display: flex;
+		gap: 60px;
+	}
+	&-generate {
+		display: flex;
+		align-items: center;
+		justify-content: center;
+		gap: 20px;
+		width: 280px;
+		p {
+			position: relative;
+			top: -2px;
+			font-weight: 700;
+			font-size: 40px;
+			line-height: 100%;
+			color: var(--text-dark);
+		}
+	}
+	&-options {
+		display: flex;
+		gap: 60px;
+	}
+	&-save {
+		display: flex;
+		align-items: center;
+		justify-content: center;
+		width: 200px;
+		p {
+			position: relative;
+			top: -2px;
+			font-weight: 700;
+			font-size: 40px;
+			line-height: 100%;
+			color: var(--text-dark);
+			user-select: none;
+			&.animation {
+				opacity: 0;
+			}
+		}
+	}
+	&-saveCheck {
+		position: absolute;
+		left: 50%;
+		top: 50%;
+		transform: translate(-50%, -50%) scale(0);
+		opacity: 0;
+		transition: none;
+		&.animation {
+			opacity: 1;
+			transform: translate(-50%, -50%) scale(1);
+			transition: all 0.2s ease-in-out;
+		}
+	}
+}

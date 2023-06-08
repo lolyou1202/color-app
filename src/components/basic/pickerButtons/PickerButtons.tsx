@@ -1,21 +1,46 @@
-import { FC, useEffect, useState } from 'react'
+import { FC, useCallback, useEffect, useState } from 'react'
 import './PickerButtons.scss'
 import { PrimaryButton } from '../../UI/primaryButton/PrimaryButton'
+import { useAppSelector } from '../../../redux/hooks'
+import { isValidateHEX } from '../../../hooks/functions/isValidateHEX'
+import { Check } from '../../UI/icons/Check'
 
 interface IPickerButtons {
-	disabledButtons?: boolean
+	HEXInputState: string
 	onClickClear: () => void
 	onClickSave: () => void
 	onClickRandom: () => void
 }
 
 export const PickerButtons: FC<IPickerButtons> = ({
-	disabledButtons,
+	HEXInputState,
 	onClickClear,
 	onClickSave,
 	onClickRandom,
 }) => {
+	const [saveAnimation, setSaveAnimation] = useState(false)
+
+	const collectionColors = useAppSelector(
+		store => store.collectionColors.collectionColors
+	)
+	const loading = useAppSelector(store => store.pickerColor.loading)
+
 	const [animation, setAnimation] = useState(true)
+
+	const colorInCollection = useCallback(() => {
+		const isValid = isValidateHEX(HEXInputState)
+		
+		if (!isValid) {
+			return true
+		}
+
+		for (let index = 0; index < collectionColors.length; index++) {
+			if (collectionColors[index].hex.includes(isValid[0])) {
+				return true
+			}
+		}
+		return false
+	}, [collectionColors, HEXInputState])
 
 	useEffect(() => {
 		setTimeout(() => {
@@ -35,28 +60,44 @@ export const PickerButtons: FC<IPickerButtons> = ({
 				alignItems='center'
 				onclick={() => onClickRandom()}
 			>
-				Random
+				<p>{loading ? 'Loading' : 'Random'}</p>
 			</PrimaryButton>
 			<PrimaryButton
 				className={
 					'picker__singleButton' +
-					(disabledButtons ? ' disabled' : '')
+					(HEXInputState && !colorInCollection() ? '' : ' disabled') +
+					(animation ? ' animation' : '')
 				}
 				display='flex'
 				justifyContent='center'
 				alignItems='center'
-				onclick={() => onClickSave()}
+				onclick={() => {
+					setSaveAnimation(true)
+					setTimeout(() => {
+						setSaveAnimation(false)
+					}, 2000)
+					onClickSave()
+				}}
 			>
-				Save
+				<p className={saveAnimation ? ' animation' : ''}>Save</p>
+				<Check
+					className={
+						'picker__singleButton-saveCheck' +
+						(saveAnimation ? ' animation' : '')
+					}
+					size={40}
+					stroke='var(--primary-dark)'
+					strokeWidth={3}
+				/>
 			</PrimaryButton>
 			<button
 				className={
 					'picker__singleButton transparent' +
-					(disabledButtons ? ' disabled' : '')
+					(HEXInputState ? '' : ' disabled')
 				}
 				onClick={() => onClickClear()}
 			>
-				Clear
+				<p>Clear</p>
 			</button>
 		</div>
 	)

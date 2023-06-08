@@ -1,0 +1,66 @@
+.addColors {
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	box-shadow: var(--shadow-short);
+	border-width: 4px;
+	padding: 4px;
+	&__backdrop {
+		display: flex;
+		align-items: center;
+		justify-content: center;
+		position: absolute;
+		top: 50%;
+		z-index: 10;
+		width: 40%;
+		height: 80%;
+		opacity: 0;
+		transform: translate(-50%, -50%);
+		transition: all 0.2s ease-in-out;
+		&:hover {
+			opacity: 1;
+		}
+	}
+	&-ico {
+		transition: all 0.2s ease-in-out;
+		&.hide {
+			display: none;
+		}
+		&.animationHide {
+			opacity: 0;
+		}
+	}
+	&__listNumbers {
+		display: flex;
+		flex-direction: column;
+		max-height: 500px;
+		opacity: 1;
+		height: auto;
+		overflow: hidden;
+		transition: max-height 0.4s ease-in-out, opacity 0.4s ease-in-out;
+		&-singleNumber {
+			display: flex;
+			align-items: center;
+			justify-content: center;
+			border-radius: var(--borderRadius-short);
+			width: 30px;
+			height: 30px;
+			p {
+				font-weight: 700;
+				font-size: 24px;
+				line-height: 100%;
+			}
+			&:hover {
+				background: rgba(#353535, 0.1);
+			}
+		}
+		&.hide {
+			display: none;
+			opacity: 0;
+			max-height: 30px;
+		}
+		&.animationHide {
+			display: flex;
+		}
+	}
+}
