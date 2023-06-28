@@ -1,0 +1,10 @@
+.singleColor__mask-funcButtons {
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+	gap: 36px;
+	transition: all .2s ease-in-out;
+	&.visible {
+		opacity: 1;
+	}
+}

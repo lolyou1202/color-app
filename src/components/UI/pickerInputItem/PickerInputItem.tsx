@@ -35,11 +35,12 @@ export const PickerInputItem: FC<IPickerInputItem> = ({
 			render: () => (
 				<Toast
 					variant='regular'
-					text={`Сolor #${color} copied to the clipboard`}
+					text={`Сolor ${color} copied to the clipboard`}
 				/>
 			),
 		})
 	}
+	console.log(mainColor)
 
 	useEffect(() => {
 		setTimeout(() => {
@@ -71,9 +72,7 @@ export const PickerInputItem: FC<IPickerInputItem> = ({
 				className='picker__inputItem-input'
 				type='text'
 				value={text}
-				onChange={event =>
-					onChange(event.target.value)
-				}
+				onChange={event => onChange(event.target.value)}
 				style={{ color: contrastColor }}
 				spellCheck='false'
 			/>
@@ -88,7 +87,9 @@ export const PickerInputItem: FC<IPickerInputItem> = ({
 			</span>
 			<AppTooltip label='Copy'>
 				<button
-					className='picker__inputItem-copy'
+					className={
+						'picker__inputItem-copy' + (text ? '' : ' disabled')
+					}
 					onClick={e => {
 						e.preventDefault()
 						onCopyClick(text)

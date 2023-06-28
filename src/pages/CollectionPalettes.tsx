@@ -3,9 +3,9 @@ import { Sidebar } from '../components/basic/sidebar/Sidebar'
 import { CollectionGrid } from '../components/basic/collectionGrid/CollectionGrid'
 import { CollectionSingleItem } from '../components/UI/collectionSingleItem/CollectionSingleItem'
 import { useAppDispatch, useAppSelector } from '../redux/hooks'
-import { removeColor } from '../redux/slices/colorsStoreSlice'
 import { CollectionSingleItemPalette } from '../components/UI/collectionSingleItem/CollectionSingleItemPalette'
 import { EnumLocation, updateLocation } from '../redux/slices/locationSlice'
+import { removeColor } from '../redux/slices/palettesStoreSlice'
 
 export const CollectionPalettes: FC = () => {
 	const palettes = useAppSelector(state => state.collectionPalettes.collectionPalettes)

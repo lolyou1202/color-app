@@ -1,7 +1,9 @@
-import { PayloadAction, createSlice } from '@reduxjs/toolkit'
+import { PayloadAction, createAsyncThunk, createSlice } from '@reduxjs/toolkit'
 import { getContrast } from '../../hooks/functions/getContrast'
 import chroma from 'chroma-js'
 import { getRandomInt } from '../../hooks/functions/getRandomInt'
+import axios from 'axios'
+import { API_Huemint } from '../api/api'
 
 export interface Ipalette {
 	id: number
@@ -13,60 +15,89 @@ export interface Ipalette {
 
 interface IinitialState {
 	palette: Ipalette[]
+	loading: boolean
 }
 
 const initialState: IinitialState = {
-	palette: [
-		{
-			id: 1,
-			HEX: '03045E',
-			contrastHEX: 'FFFFFF',
-			lock: false,
-			saved: false,
-		},
-		{
-			id: 2,
-			HEX: '0077B6',
-			contrastHEX: 'FFFFFF',
-			lock: false,
-			saved: false,
-		},
-		{
-			id: 3,
-			HEX: '00B4D8',
-			contrastHEX: 'FFFFFF',
-			lock: false,
-			saved: false,
-		},
-		{
-			id: 4,
-			HEX: '90E0EF',
-			contrastHEX: '353535',
-			lock: false,
-			saved: false,
-		},
-		{
-			id: 5,
-			HEX: 'CAF0F8',
-			contrastHEX: '353535',
-			lock: false,
-			saved: false,
-		},
-	],
+	palette: [],
+	loading: false,
 }
 
-interface fetchArgs {
+interface ColorsBetweenArgs {
 	index: number
 	number: number
 	firstColor: string
 	lastColor: string
 }
 
+export interface fetchHuemintResults {
+	results: { palette: string[]; score: number }[]
+}
+
+export interface fetchHuemintArgs {
+	mode?: 'transformer' | 'diffusion' | 'random'
+	numColors?: number
+	temperature?: string
+	numResults?: number
+	adjacency: string[]
+	palette: string[]
+}
+
+export const fetchPalette = createAsyncThunk<
+	fetchHuemintResults,
+	fetchHuemintArgs
+>(
+	'openedPalette/fetchPalette',
+	async (
+		{
+			mode = 'diffusion',
+			numColors = 4,
+			temperature = '0.2',
+			numResults = 1,
+			adjacency,
+			palette,
+		},
+		{ rejectWithValue }
+	) => {
+		try {
+			console.log({
+				mode,
+				num_colors: numColors,
+				temperature,
+				num_results: numResults,
+				adjacency,
+				palette,
+			})
+
+			const response = await axios<fetchHuemintResults>({
+				method: 'post',
+				url: API_Huemint,
+				data: {
+					mode,
+					num_colors: numColors,
+					temperature,
+					num_results: numResults,
+					adjacency,
+					palette,
+				},
+			})
+			console.log(response.data)
+
+			return response.data
+		} catch (err) {
+			return rejectWithValue(err)
+		}
+	}
+)
+
 const paletteSlice = createSlice({
 	name: 'openedPalette',
 	initialState,
 	reducers: {
-		addColorsBetweenColors(state, { payload }: PayloadAction<fetchArgs>) {
+		addColorsBetweenColors(
+			state,
+			{ payload }: PayloadAction<ColorsBetweenArgs>
+		) {
 			const arrayAddedColors = chroma
 				.scale([`#${payload.firstColor}`, `#${payload.lastColor}`])
 				.colors(payload.number + 2)
@@ -105,73 +136,80 @@ const paletteSlice = createSlice({
 			}
 			state.palette = updateState
 		},
+		swapColors(
+			state,
+			{
+				payload,
+			}: PayloadAction<{ currentPosition: number; subsequent: number }>
+		) {
+			;[
+				state.palette[payload.currentPosition],
+				state.palette[payload.subsequent],
+			] = [
+				state.palette[payload.subsequent],
+				state.palette[payload.currentPosition],
+			]
+		},
+		onChangeColor(
+			state,
+			{ payload }: PayloadAction<{ position: number; HEX: string }>
+		) {
+			state.palette[payload.position].HEX = payload.HEX
+			state.palette[payload.position].contrastHEX = getContrast(
+				payload.HEX
+			)
+		},
+		onRemove(state, { payload }: PayloadAction<{ positionIndex: number }>) {
+			state.palette.splice(payload.positionIndex, 1)
+		},
+		onSave(state, { payload }: PayloadAction<{ positionIndex: number }>) {
+			const prevState = state.palette[payload.positionIndex].saved
+			state.palette[payload.positionIndex].saved = !prevState
+		},
+		onChangeSave(
+			state,
+			{ payload }: PayloadAction<{ positionIndex: number }>
+		) {
+			state.palette[payload.positionIndex].saved = true
+		},
+		onChangeUnsave(
+			state,
+			{ payload }: PayloadAction<{ positionIndex: number }>
+		) {
+			state.palette[payload.positionIndex].saved = false
+		},
+		onLock(state, { payload }: PayloadAction<{ positionIndex: number }>) {
+			const prevState = state.palette[payload.positionIndex].lock
+			state.palette[payload.positionIndex].lock = !prevState
+		},
 	},
-	extraReducers: builder => {},
+	extraReducers: builder => {
+		builder.addCase(fetchPalette.pending, state => {
+			state.loading = true
+		})
+		builder.addCase(fetchPalette.fulfilled, (state, { payload }) => {
+			state.loading = false
+			state.palette = payload.results[0].palette.map(color => ({
+				id: getRandomInt(100, 10000),
+				HEX: color.replace(/[^a-zA-Z0-9]/g, '').toUpperCase(),
+				contrastHEX: getContrast(color).toUpperCase(),
+				lock: false,
+				saved: false,
+			}))
+		})
+	},
 })
 
 const { actions, reducer } = paletteSlice
-export const { addColorsBetweenColors, fillPalette } = actions
+export const {
+	addColorsBetweenColors,
+	fillPalette,
+	swapColors,
+	onChangeColor,
+	onRemove,
+	onSave,
+	onChangeSave,
+	onChangeUnsave,
+	onLock,
+} = actions
 export default reducer
-
-//const array1 = ['00B4D8', '1A759F', 'CAF0F8', '184E77']
-//const array2 = [
-//	{
-//		id: 1,
-//		HEX: '03045E',
-//		contrastHEX: 'FFFFFF',
-//		lock: false,
-//		saved: false,
-//	},
-//	{
-//		id: 2,
-//		HEX: '0077B6',
-//		contrastHEX: 'FFFFFF',
-//		lock: false,
-//		saved: false,
-//	},
-//	{
-//		id: 3,
-//		HEX: '00B4D8',
-//		contrastHEX: 'FFFFFF',
-//		lock: false,
-//		saved: false,
-//	},
-//	{
-//		id: 4,
-//		HEX: '90E0EF',
-//		contrastHEX: '353535',
-//		lock: false,
-//		saved: false,
-//	},
-//	{
-//		id: 5,
-//		HEX: 'CAF0F8',
-//		contrastHEX: '353535',
-//		lock: false,
-//		saved: false,
-//	},
-//]
-
-//const func = (array1: string[], array2: Ipalette[]): Ipalette[] => {
-//	const updateState = []
-
-//	asd: for (let i = 0; i < array1.length; i++) {
-//		for (let j = 0; j < array2.length; j++) {
-//			if (array1[i] === array2[j].HEX) {
-//				updateState.push(array2[j])
-//				continue asd
-//			}
-//		}
-//		updateState.push({
-//			id: getRandomInt(100, 10000),
-//			HEX: array1[i],
-//			contrastHEX: getContrast(array1[i]).toUpperCase(),
-//			lock: false,
-//			saved: false,
-//		})
-//	}
-
-//	return updateState
-//}
-
-//console.log(func(array1, array2))

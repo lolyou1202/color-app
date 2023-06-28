@@ -1,8 +1,12 @@
 .dashboard {
-	margin: 60px 0;
+	margin: 30px 0;
 	width: 100%;
-	height: calc(100vh - 110px - 140px - 120px);
+	height: calc(100vh - 110px - 140px);
 	cursor: auto;
 	overflow: hidden;
+	animation: appearance 0.4s ease-in-out;
 	transition: all .4s ease-in-out;
+	&.animation {
+		opacity: 0;
+	}
 }

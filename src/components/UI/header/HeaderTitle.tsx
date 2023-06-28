@@ -5,11 +5,12 @@ import { Link } from 'react-router-dom'
 interface IHeaderTitle {
 	title: string
 	location: ILocation
+	path: string
 }
 
-export const HeaderTitle: FC<IHeaderTitle> = ({ title, location }) => {
+export const HeaderTitle: FC<IHeaderTitle> = ({ title, location, path }) => {
 	return (
-		<Link to={`${location.path}`}>
+		<Link to={`${path}`}>
 			<button
 				className={
 					'header__list-item' + (location.active ? ' active' : '')

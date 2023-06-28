@@ -1,18 +1,24 @@
-import { FC, useCallback, useEffect } from 'react'
+import { FC, useCallback, useEffect, useState } from 'react'
 import './Dashboard.scss'
 import { useAppDispatch, useAppSelector } from '../../../redux/hooks'
 import { SingleColorInPalette } from '../singleColorInPalette/SingleColorInPalette'
-import { addColorsBetweenColors, fillPalette } from '../../../redux/slices/paletteSlice'
-import { useParams } from 'react-router-dom'
+import { fillPalette } from '../../../redux/slices/paletteSlice'
+import { useNavigate, useParams } from 'react-router-dom'
 
-export const Dashboard: FC = () => {
+interface IDashboard {
+	onClickNumberOfAdding: (index: number, number: number) => void
+	animationDelay?: string
+}
+
+export const Dashboard: FC<IDashboard> = ({ onClickNumberOfAdding, animationDelay }) => {
+	const [animation, setAnimation] = useState(true)
+
 	const { paletteId } = useParams()
-	const urlPaletteArray = paletteId?.split('-')
-	console.log(urlPaletteArray)
 
 	const { palette } = useAppSelector(store => store.pickerPalette)
 
 	const dispatch = useAppDispatch()
+	const navigate = useNavigate()
 
 	const getPositionInList = useCallback(
 		(index: number) => {
@@ -30,27 +36,29 @@ export const Dashboard: FC = () => {
 		[palette.length]
 	)
 
-	const onClickNumberOfAdding = (index: number, number: number) => {
-		dispatch(
-			addColorsBetweenColors({
-				index,
-				number,
-				firstColor: palette[index].HEX,
-				lastColor: palette[index + 1].HEX,
-			})
-		)
-	}
+	useEffect(() => {
+		navigate(`/palette/${palette.map(color => color.HEX).join('-')}`)
+	}, [dispatch, navigate, palette])
 
 	useEffect(() => {
-		//dispatch(fillPalette(urlPaletteArray || []))
-	}, [dispatch, urlPaletteArray])
+		dispatch(fillPalette(paletteId?.split('-') || []))
+	}, [dispatch, paletteId])
 
-	//useEffect(() => {
-		
-	//}, [])
+	useEffect(() => {
+		setTimeout(() => {
+			setAnimation(false)
+		}, 400)
+	}, [])
 
 	return (
-		<div className='dashboard primaryButton'>
+		<div
+			className={
+				'dashboard primaryButton' + (animation ? ' animation' : '')
+			}
+			style={{
+				animationDelay: animationDelay,
+			}}
+		>
 			{palette.map((singleColor, index) => (
 				<SingleColorInPalette
 					key={singleColor.id}

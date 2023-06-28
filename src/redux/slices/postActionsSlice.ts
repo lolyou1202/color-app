@@ -17,9 +17,6 @@ export interface IremovingColor {
 export interface IselectingColor {
 	id: number
 }
-export interface ItogglingColor {
-	id: number
-}
 export interface IgeneratingPalette {
 	id: number
 }
@@ -30,7 +27,6 @@ interface IinitialState {
 	movingColors: ImovingColors[]
 	removingColor: IremovingColor[]
 	selectingColor: IselectingColor[]
-	togglingColor: ItogglingColor[]
 	generatingPalette: IgeneratingPalette[]
 }
 
@@ -40,7 +36,6 @@ const initialState: IinitialState = {
 	movingColors: [],
 	removingColor: [],
 	selectingColor: [],
-	togglingColor: [],
 	generatingPalette: [],
 }
 

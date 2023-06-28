@@ -3,7 +3,6 @@ import './AddColors.scss'
 import { Plus } from '../icons/Plus'
 import { useAddNumbOfColors } from '../../../hooks/useAddNumbOfColors'
 import { useLeaveAdditiveArea } from '../../../hooks/useLeaveAdditiveArea'
-import { AppTooltip } from '../tooltip/AppTooltip'
 
 interface IAddColors {
 	paletteLength: number
@@ -36,22 +35,20 @@ export const AddColors: FC<IAddColors> = ({
 		>
 			{10 - paletteLength > 0 && (
 				<div className='addColors primaryButton'>
-					<AppTooltip label='Add colors' marginBottom={10}>
-						<button
-							className={
-								'addColors-ico' +
-								(showPlus ? '' : ' hide') +
-								(animationPlus ? ' animationHide' : '')
-							}
-							onClick={() => animateClick()}
-						>
-							<Plus
-								size={30}
-								stroke='var(--primary-dark)'
-								strokeWidth={3}
-							/>
-						</button>
-					</AppTooltip>
+					<button
+						className={
+							'addColors-ico' +
+							(showPlus ? '' : ' hide') +
+							(animationPlus ? ' animationHide' : '')
+						}
+						onClick={() => animateClick()}
+					>
+						<Plus
+							size={30}
+							stroke='var(--primary-dark)'
+							strokeWidth={3}
+						/>
+					</button>
 					<div
 						className={
 							'addColors__listNumbers' +

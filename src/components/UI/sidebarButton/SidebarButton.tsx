@@ -1,4 +1,4 @@
-import { FC } from 'react'
+import { FC, useEffect, useState } from 'react'
 import { Link } from 'react-router-dom'
 import { PrimaryButton } from '../primaryButton/PrimaryButton'
 import {
@@ -19,10 +19,18 @@ export const SidebarButton: FC<ISidebarButton> = ({
 	collectionLocation,
 	animationDelay,
 }) => {
+	const [animation, setAnimation] = useState(true)
+
 	const collectionPage = useAppSelector(
 		store => store.location[EnumLocation.collection]
 	)
 	const dispatch = useAppDispatch()
+
+	useEffect(() => {
+		setTimeout(() => {
+			setAnimation(false)
+		}, 400)
+	}, [])
 
 	return (
 		<Link
@@ -32,7 +40,9 @@ export const SidebarButton: FC<ISidebarButton> = ({
 					: collectionLocation.path
 			}
 			onClick={() => dispatch(toggleLocation(collectionLocation.text))}
-			className='collection__sidebar-link'
+			className={
+				'collection__sidebar-link' + (animation ? ' animation' : '')
+			}
 			style={{
 				animationDelay: animationDelay,
 			}}

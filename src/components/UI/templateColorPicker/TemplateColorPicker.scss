@@ -1,0 +1,22 @@
+.singleColor__mask-colorPicker {
+	width: 180px;
+	height: 60px;
+	cursor: pointer;
+	p {
+		display: flex;
+		align-items: center;
+		justify-content: center;
+		width: 100%;
+		height: 100%;
+		font-size: 40px;
+		line-height: 100%;
+		border-radius: var(--borderRadius-wide);
+		transition: all 0.2s ease-in-out;
+		&:hover {
+			background: rgba($color: #353535, $alpha: 0.1);
+		}
+	}
+	.chakra-popover__popper {
+		z-index: 1000 !important;
+	}
+}

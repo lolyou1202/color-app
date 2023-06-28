@@ -25,6 +25,24 @@ export const OptionButtons: FC<IOptionButton> = ({
 	const writeWithDash = useWriteWithDash()
 	const toast = useToast()
 
+	const onClickTrashButton = () => {
+		onClickTrash(collectionItem.id)
+		setAnimationDelete(true)
+		toast({
+			render: () => (
+				<Toast
+					variant='regular'
+					text={
+						currentLocation(location)?.text ===
+						EnumLocation.collectionColors
+							? `Color #${collectionItem.hex[0]} removed from collection`
+							: 'Palette removed from collection'
+					}
+				/>
+			),
+		})
+	}
+
 	return (
 		<div className='collection__grid-optionButtons'>
 			<Link
@@ -57,23 +75,7 @@ export const OptionButtons: FC<IOptionButton> = ({
 				boxShadow='var(--shadow-short)'
 				width='46px'
 				height='46px'
-				onclick={() => {
-					onClickTrash(collectionItem.id)
-					setAnimationDelete(true)
-					toast({
-						render: () => (
-							<Toast
-								variant='regular'
-								text={
-									currentLocation(location)?.text ===
-									EnumLocation.collectionColors
-										? `Color #${collectionItem.hex[0]} removed from collection`
-										: 'Palette removed from collection'
-								}
-							/>
-						),
-					})
-				}}
+				onclick={() => onClickTrashButton()}
 			>
 				<Trash size={28} stroke='#353535' strokeWidth={3} />
 			</PrimaryButton>

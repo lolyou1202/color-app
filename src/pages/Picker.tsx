@@ -22,6 +22,7 @@ export const Picker: FC = () => {
 
 	const [HEXInputState, SetHEXInputState] = useState(colorId || '')
 	const [RGBInputState, SetRGBInputState] = useState('')
+	const [flag, setFlag] = useState(false)
 
 	const location = useLocation()
 	const navigate = useNavigate()
@@ -45,12 +46,10 @@ export const Picker: FC = () => {
 
 			const { r, g, b } = RGB
 
-			if (
-				location.pathname !== `/picker/${validValue}` &&
-				validValue !== pickerColor.color
-			) {
+			if (location.pathname !== `/picker/${validValue}`) {
 				navigate(`/picker/${validValue}`)
 			}
+
 			if (validValue !== pickerColor.color) {
 				dispatch(setColor(validValue))
 			}
@@ -106,6 +105,7 @@ export const Picker: FC = () => {
 		})
 	}
 	const onClickRandom = () => {
+		setFlag(true)
 		dispatch(fetchRandom())
 	}
 
@@ -114,12 +114,12 @@ export const Picker: FC = () => {
 	}, [dispatch])
 
 	useEffect(() => {
-		dispatch(setColor(colorId || ''))
-	}, [colorId, dispatch])
-
-	useEffect(() => {
-		HEXToRGB(pickerColor.color)
-	}, [HEXToRGB, pickerColor.color])
+		if (colorId !== pickerColor.color) {
+			flag ? HEXToRGB(pickerColor.color) : HEXToRGB(colorId || '')
+		} else {
+			HEXToRGB(pickerColor.color)
+		}
+	}, [HEXToRGB, pickerColor.color, colorId, flag])
 
 	return (
 		<div className='picker'>
